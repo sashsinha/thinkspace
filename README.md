@@ -6,7 +6,7 @@
 
 <h1 align="center">ThinkSpace</h1>
 
-<h3 align="center">Context-Aware Scratchpad for Coders</h3>
+<h3 align="center">Context-Aware Scratchpad</h3>
 
 <br/>
 
