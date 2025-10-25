@@ -1,10 +1,10 @@
 <p align="center">
 <a href="https://github.com/sashsinha/thinkspace">
-  <img alt="ThinkSpace Logo" src="https://raw.githubusercontent.com/sashsinha/thinkspace/main/logo.png" width=256 height=256>
+  <img alt="thinkspace logo" src="https://raw.githubusercontent.com/sashsinha/thinkspace/main/logo.png" width=256 height=256>
 </a>
 </p>
 
-<h1 align="center">ThinkSpace</h1>
+<h1 align="center">thinkspace</h1>
 
 <h3 align="center">Context-Aware Scratchpad</h3>
 
@@ -158,7 +158,6 @@ ruff format .
 
 ---
 
-
 ## ⚡ uv workflow
 
 Prefer using [uv](https://docs.astral.sh/uv/) for speed and reproducibility.
@@ -186,8 +185,3 @@ uv publish  # set UV_PUBLISH_TOKEN with a PyPI token
 ```
 
 Dev dependencies live in `[dependency-groups]` and are synced by default.
-
-
-## 📝 License
-
-MIT © Thinkspace
