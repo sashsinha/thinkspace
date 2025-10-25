@@ -50,7 +50,7 @@
 ## 🚀 Quickstart
 
 ```bash
-pip install thinkspace-cli
+pip install thinkspace
 # or from source
 pip install .
 ```

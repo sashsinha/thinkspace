@@ -3,7 +3,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "thinkspace-cli"
+name = "thinkspace"
 version = "1.0.0"
 description = "Context-Aware Scratchpad for Coders — a lightning-fast CLI to capture and search transient thoughts."
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -48,7 +48,6 @@ include = ["src/thinkspace/**"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src/thinkspace/**", "README.md", "LICENSE", "pyproject.toml", "tests/**"]
-
 
 [dependency-groups]
 dev = [
