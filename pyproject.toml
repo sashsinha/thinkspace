@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "thinkspace-cli"
+version = "1.0.0"
+description = "Context-Aware Scratchpad for Coders — a lightning-fast CLI to capture and search transient thoughts."
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.9"
+authors = [
+  {name = "Sash Sinha", email = "sashsinha1@gmail.com"}
+]
+maintainers = [
+  {name = "Sash Sinha", email = "sashsinha1@gmail.com"}
+]
+license = { text = "MIT" }
+keywords = ["cli", "note-taking", "scratchpad", "developer", "notes", "search", "fts5", "rich", "typer"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+  "Topic :: Text Processing :: Indexing",
+]
+dependencies = ["typer>=0.12", "rich>=13.7", "platformdirs>=4.2"]
+
+[project.urls]
+Homepage = "https://github.com/example/thinkspace"
+Repository = "https://github.com/example/thinkspace"
+Issues = "https://github.com/example/thinkspace/issues"
+
+[project.scripts]
+thinkspace = "thinkspace.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/thinkspace"]
+include = ["src/thinkspace/**"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/thinkspace/**", "README.md", "LICENSE", "pyproject.toml", "tests/**"]
+
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+  "build>=1.2",
+  "twine>=5.0",
+  "mypy>=1.8",
+]
+
+[tool.uv]
+default-groups = ["dev"]
