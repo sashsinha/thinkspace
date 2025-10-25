@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://github.com/sashsinha/thinkspace">
-  <img alt="ThinkSpace Logo" src="https://raw.githubusercontent.com/sashsinha/thinkspace/main/logo.png">
+  <img alt="ThinkSpace Logo" src="https://raw.githubusercontent.com/sashsinha/thinkspace/main/logo.png" width=256 height=256>
 </a>
 </p>
 
