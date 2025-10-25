@@ -42,7 +42,7 @@
 - 🔎 **Search** by text, tags, project, or time window. Uses SQLite with FTS5 full-text indexes when available, otherwise runs compatible LIKE queries.
 - 📦 Zero-config local store in your user data dir (e.g. `~/.local/share/thinkspace/notes.db`).
 - 🎨 **Rich CLI output**: readable tables, panels, and helpful highlighting.
-- 🗑️ **Safe deletes** with per-note confirmation so you can clean up old snippets.
+- 🗑️ **Safe deletes** with per-note confirmation or an interactive picker.
 - 🧰 Portable single dependency stack (Typer + Rich + Platformdirs).
 
 ---
@@ -97,6 +97,12 @@ Delete a note:
 thinkspace delete 42
 ```
 
+Clean up interactively:
+
+```bash
+thinkspace delete --interactive --limit 50
+```
+
 ---
 
 ## 🧩 Commands
@@ -107,7 +113,7 @@ thinkspace delete 42
 - `tags` – Show top tags (auto & manual).
 - `db-path` – Print the notes DB path.
 - `export` – Export all notes (optionally filtered) to Markdown.
-- `delete [ID ...]` – Remove one or more notes (prompts for confirmation unless `--yes` is provided).
+- `delete [ID ...]` – Remove one or more notes (prompts for confirmation unless `--yes` is provided, or open with `--interactive` to choose from a checklist).
 
 ---
 

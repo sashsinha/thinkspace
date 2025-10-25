@@ -51,6 +51,80 @@ def _escape(s: str) -> str:
   return s.replace('[', r'\[').replace(']', r'\]')
 
 
+def _format_snippet(text: str, max_len: int = 60) -> str:
+  snippet = text.strip().replace('\n', ' ')
+  if len(snippet) > max_len:
+    return snippet[: max_len - 1] + '…'
+  return snippet
+
+
+def _interactive_select_notes(conn, *, limit: int) -> list[int]:
+  notes = list(iter_recent(conn, limit=limit))
+  if not notes:
+    console.print('[dim]No recent notes to choose from.[/]')
+    return []
+
+  available = {n.id: n for n in notes}
+  selected: set[int] = set()
+
+  while True:
+    table = Table(title='🗂️ Select notes to delete', box=box.SIMPLE_HEAVY)
+    table.add_column('Pick', justify='center', style='cyan')
+    table.add_column('ID', justify='right', style='dim')
+    table.add_column('Snippet')
+    table.add_column('Project', style='cyan')
+    table.add_column('When', style='yellow')
+
+    for n in notes:
+      mark = '[x]' if n.id in selected else '[ ]'
+      table.add_row(
+        mark, str(n.id), _format_snippet(n.text, 60), n.project, n.created_at
+      )
+
+    console.print(table)
+    console.print(
+      '[dim]Toggle selections by entering note IDs separated by spaces or commas.[/]'
+    )
+    console.print("[dim]Press Enter to confirm, or type 'q' to cancel.[/]")
+
+    try:
+      raw = console.input('[cyan]select> [/cyan]').strip()
+    except (EOFError, KeyboardInterrupt):
+      console.print('[dim]Selection cancelled.[/]')
+      return []
+
+    if raw.lower() in {'q', 'quit'}:
+      console.print('[dim]Selection cancelled.[/]')
+      return []
+
+    if not raw:
+      if selected:
+        return [n.id for n in notes if n.id in selected]
+      console.print('[yellow]No notes selected yet.[/]')
+      continue
+
+    tokens = [tok for tok in re.split(r'[,\s]+', raw) if tok]
+    invalid: list[str] = []
+    for tok in tokens:
+      try:
+        nid = int(tok)
+      except ValueError:
+        invalid.append(tok)
+        continue
+      if nid not in available:
+        invalid.append(tok)
+        continue
+      if nid in selected:
+        selected.remove(nid)
+      else:
+        selected.add(nid)
+
+    if invalid:
+      console.print(f'[yellow]Ignored: {", ".join(invalid)}[/]')
+
+    console.print()
+
+
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context):
   if ctx.invoked_subcommand is None:
@@ -177,22 +251,54 @@ def list_notes(
 @app.command(help='🗑️  Delete note(s) by ID.')
 def delete(
   note_id: List[int] = typer.Argument(
-    ..., help='One or more note IDs to delete.'
+    None, help='One or more note IDs to delete.'
   ),
   yes: bool = typer.Option(
     False, '--yes', '-y', help='Skip confirmation prompt.'
   ),
+  interactive: bool = typer.Option(
+    False,
+    '--interactive',
+    '-i',
+    help='Open an interactive picker for recent notes.',
+  ),
+  limit: int = typer.Option(
+    20,
+    '--limit',
+    '-l',
+    help='How many recent notes to show when using --interactive.',
+  ),
 ):
   conn = connect()
-  for nid in note_id:
+  target_ids: list[int] = []
+
+  if interactive:
+    selected = _interactive_select_notes(conn, limit=limit)
+    target_ids.extend(selected)
+
+  if note_id:
+    target_ids.extend(note_id)
+
+  # Deduplicate while preserving order
+  deduped: list[int] = []
+  seen: set[int] = set()
+  for nid in target_ids:
+    if nid in seen:
+      continue
+    deduped.append(nid)
+    seen.add(nid)
+
+  if not deduped:
+    console.print('[dim]No notes selected for deletion.[/]')
+    return
+
+  for nid in deduped:
     note = get_note(conn, nid)
     if not note:
       console.print(f'[yellow]Note #{nid} not found; skipping.[/]')
       continue
 
-    snippet = note.text.strip().splitlines()[0] if note.text else ''
-    if len(snippet) > 60:
-      snippet = snippet[:57] + '...'
+    snippet = _format_snippet(note.text, 60)
 
     if not yes:
       if not typer.confirm(

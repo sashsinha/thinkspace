@@ -49,3 +49,25 @@ def test_cli_delete_confirmation_flow(
   assert 'Deleted note' in confirm.stdout
   with closing(connect()) as conn:
     assert get_note(conn, nid) is None
+
+
+def test_cli_delete_interactive_selection(
+  scoped_db, cli_runner: CliRunner, insert_sample, monkeypatch
+):
+  monkeypatch.setattr(cli_module, 'detect_project', lambda: ('demo', scoped_db))
+  with closing(connect()) as conn:
+    nid = insert_sample(conn, 'interactive delete target')
+
+  # First toggle the note, then submit a blank line to confirm selection.
+  user_input = f'{nid}\n\ny\n'
+  result = cli_runner.invoke(
+    cli_module.app,
+    ['delete', '--interactive', '--limit', '10'],
+    input=user_input,
+  )
+
+  assert result.exit_code == 0
+  assert f'Deleted note #{nid}' in result.stdout
+
+  with closing(connect()) as conn:
+    assert get_note(conn, nid) is None
